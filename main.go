@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/khrees2412/evolvecredit/config"
 	"github.com/khrees2412/evolvecredit/database"
+	"github.com/khrees2412/evolvecredit/routes"
 	"log"
 	"net/http"
 	"os"
@@ -54,6 +55,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("migration error: %v", err)
 	}
+	routes.RegisterRoutes(app)
 
 	if err := app.Listen(":" + port); err != nil && err != http.ErrServerClosed {
 		log.Fatal(fmt.Sprintf("listen: %s\n", err))

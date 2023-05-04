@@ -14,6 +14,7 @@ type Transaction struct {
 	Type   types.TransactionType   `json:"type"`
 	Entry  types.TransactionEntry  `json:"entry"`
 	Status types.TransactionStatus `json:"status"`
+	Reason string                  `json:"reason"`
 }
 
 func (u *Transaction) BeforeCreate(tx *gorm.DB) (err error) {

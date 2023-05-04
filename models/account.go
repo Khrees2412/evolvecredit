@@ -7,14 +7,13 @@ import (
 
 type Account struct {
 	Base
-	Id               string  `json:"id"`
-	UserId           string  `json:"user_id" gorm:"foreignKey"`
-	AccountNumber    string  `json:"account_number" gorm:"unique"`
-	Balance          float64 `json:"balance"`
-	LedgerBalance    int64   `json:"ledger_balance" gorm:"not null;default:0"`
-	AvailableBalance int64   `json:"available_balance" gorm:"not null;default:0"`
-	LockedBalance    int64   `json:"locked_balance"`
-	IsActive         *bool   `json:"is_active" gorm:"not null;default:true"`
+	Id               string `json:"id"`
+	UserId           string `json:"user_id" gorm:"foreignKey"`
+	AccountNumber    string `json:"account_number" gorm:"unique"`
+	LedgerBalance    int64  `json:"ledger_balance" gorm:"not null;default:0"`
+	AvailableBalance int64  `json:"available_balance" gorm:"not null;default:0"`
+	TotalLocked      int64  `json:"total_locked" gorm:"not null;default:0"`
+	IsActive         *bool  `json:"is_active" gorm:"not null;default:true"`
 }
 
 type Savings struct {

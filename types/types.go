@@ -15,12 +15,10 @@ type (
 		Data    interface{} `json:"data,omitempty"`
 	}
 	RegisterRequest struct {
-		FirstName   string `json:"first_name" validate:"required"`
-		LastName    string `json:"last_name" validate:"required"`
-		PhoneNumber string `json:"phone_number"`
-		Email       string `json:"email" validate:"required"`
-		Password    string `json:"password" validate:"required"`
-		Code        string `json:"code" validate:"required"`
+		FirstName string `json:"first_name" validate:"required"`
+		LastName  string `json:"last_name" validate:"required"`
+		Email     string `json:"email" validate:"required"`
+		Password  string `json:"password" validate:"required"`
 	}
 	RegisterResponse struct {
 		FirstName string `json:"first_name"`

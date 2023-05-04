@@ -87,7 +87,7 @@ func SecureAuth() func(*fiber.Ctx) error {
 			}
 		}
 
-		c.Set(AuthUserContextKey, claims.ID)
+		c.Set(AuthUserContextKey, claims.UserId)
 		return c.Next()
 	}
 }
