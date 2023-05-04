@@ -1,6 +1,11 @@
 package utils
 
-import "strings"
+import (
+	"math/rand"
+	"strconv"
+	"strings"
+	"time"
+)
 
 type Token struct{}
 
@@ -11,4 +16,13 @@ func (tk Token) ExtractBearerToken(t string) (string, error) {
 		return "", nil
 	}
 	return f[1], nil
+}
+
+func GenerateAccountNumber() string {
+	num := ""
+	for i := 1; i < 10; i++ {
+		rand.Seed(time.Now().UnixNano())
+		num = strconv.Itoa(rand.Int())
+	}
+	return num
 }
