@@ -39,6 +39,21 @@ type (
 		ExpiresAt   int64  `json:"expires_at"`
 		Issuer      string `json:"issuer"`
 	}
+	AccountResponse struct {
+		AccountNumber   string `json:"account_number"`
+		CurrentBalance  int64  `json:"current_balance"`
+		PreviousBalance int64  `json:"previous_balance"`
+	}
+	WithdrawalRequest struct {
+		Amount        int64  `json:"amount" validate:"required"`
+		Reason        string `json:"reason"`
+		AccountNumber string `json:"account_number" validate:"required"`
+	}
+	DepositRequest struct {
+		Amount        int64  `json:"amount" validate:"required"`
+		Reason        string `json:"reason"`
+		AccountNumber string `json:"account_number" validate:"required"`
+	}
 )
 
 type Currency string

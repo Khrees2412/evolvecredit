@@ -11,9 +11,9 @@ type WalletLedger struct {
 	Id              string                 `json:"id"`
 	UserId          string                 `json:"user_id"`
 	TransactionId   string                 `json:"transaction_id"`
-	AccountId       string                 `json:"account_id"`
-	PreviousBalance float64                `json:"previous_balance"`
-	CurrentBalance  float64                `json:"current_balance"`
+	AccountNumber   string                 `json:"account_number"`
+	PreviousBalance int64                  `json:"previous_balance"`
+	CurrentBalance  int64                  `json:"current_balance"`
 	Entry           types.TransactionEntry `json:"entry"`
 }
 

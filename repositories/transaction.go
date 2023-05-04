@@ -42,26 +42,6 @@ func (t *transactionRepo) FindByID(id uint) (*models.Transaction, error) {
 	return &transaction, nil
 }
 
-func (t *transactionRepo) FindByReference(reference string) (*models.Transaction, error) {
-
-	var transaction models.Transaction
-	if err := t.db.Where("reference = ?", reference).First(&transaction).Error; err != nil {
-		return nil, err
-	}
-
-	return &transaction, nil
-}
-
-func (t *transactionRepo) FindByExRef(reference string) (*models.Transaction, error) {
-
-	var transaction models.Transaction
-	if err := t.db.Where("external_ref = ?", reference).First(&transaction).Error; err != nil {
-		return nil, err
-	}
-
-	return &transaction, nil
-}
-
 func (t *transactionRepo) FindAllByUserID(userId string, page int, pageSize int, status types.TransactionStatus, entry types.TransactionEntry) *[]models.Transaction {
 
 	var transactions []models.Transaction

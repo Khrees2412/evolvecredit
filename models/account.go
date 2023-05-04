@@ -13,7 +13,7 @@ type Account struct {
 	LedgerBalance    int64  `json:"ledger_balance" gorm:"not null;default:0"`
 	AvailableBalance int64  `json:"available_balance" gorm:"not null;default:0"`
 	TotalLocked      int64  `json:"total_locked" gorm:"not null;default:0"`
-	IsActive         *bool  `json:"is_active" gorm:"not null;default:true"`
+	IsActive         bool   `json:"is_active" gorm:"not null;default:true"`
 }
 
 type Savings struct {
