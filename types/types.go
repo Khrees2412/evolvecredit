@@ -44,6 +44,12 @@ type (
 		CurrentBalance  int64  `json:"current_balance"`
 		PreviousBalance int64  `json:"previous_balance"`
 	}
+	SavingsResponse struct {
+		AccountNumber   string `json:"account_number"`
+		CurrentBalance  int64  `json:"current_balance"`
+		PreviousBalance int64  `json:"previous_balance"`
+		LockedBalance   int64  `json:"locked_balance"`
+	}
 	WithdrawalRequest struct {
 		Amount        int64  `json:"amount" validate:"required"`
 		Reason        string `json:"reason"`

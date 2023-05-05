@@ -132,6 +132,18 @@ func (p paymentService) Withdrawal(user *models.User, request *types.WithdrawalR
 		return err
 	}
 
+	err = p.ledgerRepo.WithTx(tx).Create(&models.WalletLedger{
+		TransactionId:   trx.Id,
+		AccountNumber:   response.AccountNumber,
+		Entry:           types.Debit,
+		PreviousBalance: response.PreviousBalance,
+		CurrentBalance:  response.CurrentBalance,
+	})
+
+	if err != nil {
+		return err
+	}
+
 	err = uw.Commit(tx)
 
 	if err != nil {

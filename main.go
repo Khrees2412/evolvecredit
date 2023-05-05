@@ -37,6 +37,7 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("You're home, yaay!!")
 	})
+	setupSystemRouteHandler(app)
 
 	port := os.Getenv("PORT")
 

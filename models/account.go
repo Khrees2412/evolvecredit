@@ -18,18 +18,13 @@ type Account struct {
 
 type Savings struct {
 	Base
-	Id       string  `json:"id"`
-	UserId   string  `json:"user_id"`
-	Amount   float64 `json:"amount"`
-	Duration int     `json:"duration"` // savings lock duration in days
+	AccountNumber string `json:"account_number"`
+	UserId        string `json:"user_id"`
+	Amount        int64  `json:"amount"`
+	Duration      int    `json:"duration"` // savings lock duration in days
 }
 
 func (u *Account) BeforeCreate(tx *gorm.DB) (err error) {
-	u.Id = uuid.NewString()
-	return nil
-}
-
-func (u *Savings) BeforeCreate(tx *gorm.DB) (err error) {
 	u.Id = uuid.NewString()
 	return nil
 }
