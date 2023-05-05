@@ -8,7 +8,7 @@ import (
 type Account struct {
 	Base
 	Id               string `json:"id"`
-	UserId           string `json:"user_id" gorm:"foreignKey"`
+	UserId           string `json:"-" gorm:"foreignKey"`
 	AccountNumber    string `json:"account_number" gorm:"unique"`
 	LedgerBalance    int64  `json:"ledger_balance" gorm:"not null;default:0"`
 	AvailableBalance int64  `json:"available_balance" gorm:"not null;default:0"`

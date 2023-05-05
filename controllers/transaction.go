@@ -37,7 +37,7 @@ func (ctl *transactionController) GetTransaction(ctx *fiber.Ctx) error {
 	transactionId := ctx.Params("id")
 	transaction, err := ctl.transactionService.GetTransaction(userId, transactionId)
 	if err != nil {
-		return ctx.JSON(types.GenericResponse{
+		return ctx.Status(fiber.StatusBadRequest).JSON(types.GenericResponse{
 			Success: false,
 			Message: err.Error(),
 		})
@@ -47,7 +47,7 @@ func (ctl *transactionController) GetTransaction(ctx *fiber.Ctx) error {
 		Message: "Successfully retrieved transaction",
 		Data:    transaction,
 	}
-	return ctx.JSON(res)
+	return ctx.Status(fiber.StatusOK).JSON(res)
 
 }
 
@@ -74,12 +74,12 @@ func (ctl *transactionController) GetAllTransactions(ctx *fiber.Ctx) error {
 	}
 	transactions, err := ctl.transactionService.GetAllTransactions(userId, types.TransactionEntry(entry), types.TransactionStatus(status), pagination)
 	if err != nil {
-		return ctx.JSON(types.GenericResponse{
+		return ctx.Status(fiber.StatusBadRequest).JSON(types.GenericResponse{
 			Success: false,
 			Message: err.Error(),
 		})
 	}
-	return ctx.JSON(types.GenericResponse{
+	return ctx.Status(fiber.StatusOK).JSON(types.GenericResponse{
 		Success: true,
 		Message: "Successfully retrieved transactions",
 		Data:    transactions,

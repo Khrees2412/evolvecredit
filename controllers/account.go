@@ -3,13 +3,12 @@ package controllers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/khrees2412/evolvecredit/services"
+	"github.com/khrees2412/evolvecredit/types"
 	"github.com/khrees2412/evolvecredit/utils"
 )
 
 type IAccountController interface {
-	GetBalance(ctx *fiber.Ctx) error
-	GetTotalSaved(ctx *fiber.Ctx) error
-	CreateSavings(ctx *fiber.Ctx) error
+	GetAccount(ctx *fiber.Ctx) error
 	RegisterRoutes(app *fiber.App)
 }
 
@@ -25,21 +24,28 @@ func NewAccountController() IAccountController {
 
 func (ctl *accountController) RegisterRoutes(app *fiber.App) {
 	accounts := app.Group("/v1/accounts")
-	accounts.Get("/balance", utils.SecureAuth(), ctl.GetBalance)
-	accounts.Get("/savings", utils.SecureAuth(), ctl.GetTotalSaved)
-	accounts.Post("/savings", utils.SecureAuth(), ctl.CreateSavings)
+	accounts.Get("/balance", utils.SecureAuth(), ctl.GetAccount)
 
 }
 
-func (ctl *accountController) CreateSavings(ctx *fiber.Ctx) error {
-	return nil
-}
+func (ctl *accountController) GetAccount(ctx *fiber.Ctx) error {
+	userId, err := utils.UserFromContext(ctx)
+	if err != nil {
+		return err
+	}
 
-func (ctl *accountController) GetBalance(ctx *fiber.Ctx) error {
-	return nil
-}
+	account, err := ctl.accountService.GetAccount(userId)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
 
-func (ctl *accountController) GetTotalSaved(ctx *fiber.Ctx) error {
-	return nil
-}
+	return ctx.Status(fiber.StatusOK).JSON(types.GenericResponse{
+		Success: true,
+		Message: "Successfully retrieved account",
+		Data:    account,
+	})
 
+}

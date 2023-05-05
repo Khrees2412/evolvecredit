@@ -8,7 +8,7 @@ import (
 
 type ISavingsService interface {
 	GetSavings(accountNumber string) (*types.SavingsResponse, error)
-	SaveFunds(userId string, request types.SavingsRequest) error
+	SaveFunds(userId string, request *types.SavingsRequest) error
 }
 
 type savingsService struct {
@@ -42,7 +42,7 @@ func (s savingsService) GetSavings(accountNumber string) (*types.SavingsResponse
 	}, nil
 }
 
-func (s savingsService) SaveFunds(userId string, request types.SavingsRequest) error {
+func (s savingsService) SaveFunds(userId string, request *types.SavingsRequest) error {
 
 	uw := repositories.NewGormUnitOfWork()
 	tx, err := uw.Begin()

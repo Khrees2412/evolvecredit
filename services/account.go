@@ -11,6 +11,7 @@ import (
 )
 
 type IAccountService interface {
+	GetAccount(userId string) (*models.Account, error)
 	CreateAccount(userId string) error
 	CreditAccount(accountNumber string, amount int64, trx *gorm.DB) (*types.AccountResponse, error)
 	DebitAccount(accountNumber string, amount int64, trx *gorm.DB) (*types.AccountResponse, error)
@@ -34,6 +35,14 @@ func NewAccountService() IAccountService {
 var (
 	ErrAccountAlreadyExists = errors.New("an account already exists for this user")
 )
+
+func (as accountService) GetAccount(userId string) (*models.Account, error) {
+	account, err := as.accountRepo.FindByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+	return account, nil
+}
 
 func (as accountService) CreateAccount(userId string) error {
 	_, err := as.accountRepo.FindByUserId(userId)

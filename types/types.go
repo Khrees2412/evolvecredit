@@ -65,6 +65,10 @@ type (
 		Amount        int64  `json:"amount"`
 		Duration      int    `json:"duration"`
 	}
+	GetSavingsResponse struct {
+		CurrentBalance int64 `json:"current_balance"`
+		LockedFunds    int64 `json:"locked_funds"`
+	}
 	Pagination struct {
 		Page     int `json:"page"`
 		PageSize int `json:"page_size"`
