@@ -16,6 +16,7 @@ type Transaction struct {
 	Entry         types.TransactionEntry  `json:"entry"`
 	Status        types.TransactionStatus `json:"status"`
 	Balance       int64                   `json:"balance"`
+	LockedAmount  int64                   `json:"locked_amount"`
 	Summary       string                  `json:"summary"`
 }
 

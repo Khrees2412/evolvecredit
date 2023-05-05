@@ -10,7 +10,8 @@ import (
 
 type ITransactionRepository interface {
 	Create(transaction *models.Transaction) error
-	FindAllByUserID(userId string, page int, pageSize int, status types.TransactionStatus, entry types.TransactionEntry) *[]models.Transaction
+	FindById(userId string, transactionId string) (*models.Transaction, error)
+	FindAllByUserId(userId string, entry types.TransactionEntry, status types.TransactionStatus, pagination types.Pagination) (*[]models.Transaction, error)
 	FindAllByAccountId(accountId string) (*[]models.Transaction, error)
 	FindAllByUserInRange(userId string, from time.Time) (*[]models.Transaction, error)
 	Update(transaction *models.Transaction) error
@@ -32,21 +33,20 @@ func (t *transactionRepo) Create(transaction *models.Transaction) error {
 	return t.db.Create(transaction).Error
 }
 
-func (t *transactionRepo) FindByID(id uint) (*models.Transaction, error) {
+func (t *transactionRepo) FindById(userId string, transactionId string) (*models.Transaction, error) {
 
 	var transaction models.Transaction
-	if err := t.db.Where("id = ?", id).Preload("Counterparty").First(&transaction).Error; err != nil {
+	if err := t.db.Where("user_id AND id = ?", userId, transactionId).First(&transaction).Error; err != nil {
 		return nil, err
 	}
 
 	return &transaction, nil
 }
 
-func (t *transactionRepo) FindAllByUserID(userId string, page int, pageSize int, status types.TransactionStatus, entry types.TransactionEntry) *[]models.Transaction {
-
+func (t *transactionRepo) FindAllByUserId(userId string, entry types.TransactionEntry, status types.TransactionStatus, pagination types.Pagination) (*[]models.Transaction, error) {
 	var transactions []models.Transaction
 
-	chain := t.db.Scopes(paginate(page, pageSize)).Where("user_id = ?", userId)
+	chain := t.db.Scopes(paginate(pagination.Page, pagination.PageSize)).Where("user_id = ?", userId)
 
 	if status != "" {
 		chain = chain.Where("status = ?", status)
@@ -55,15 +55,17 @@ func (t *transactionRepo) FindAllByUserID(userId string, page int, pageSize int,
 		chain = chain.Where("entry = ?", entry)
 	}
 
-	chain.Order("id DESC").Find(&transactions)
+	if err := chain.Order("created_at DESC").Find(&transactions).Error; err != nil {
+		return nil, err
+	}
 
-	return &transactions
+	return &transactions, nil
 }
 
 func (t *transactionRepo) FindAllByAccountId(accountId string) (*[]models.Transaction, error) {
 
 	var transactions []models.Transaction
-	if err := t.db.Where("account_id = ? ", accountId).Order("id DESC").Find(&transactions).Error; err != nil {
+	if err := t.db.Where("account_id = ? ", accountId).Order("created_at DESC").Find(&transactions).Error; err != nil {
 		return nil, err
 	}
 

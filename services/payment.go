@@ -8,8 +8,8 @@ import (
 )
 
 type IPaymentService interface {
-	Deposit(user models.User, request *types.DepositRequest) error
-	Withdrawal(user *models.User, request *types.WithdrawalRequest) error
+	Deposit(userId string, request *types.DepositRequest) error
+	Withdrawal(userId string, request *types.WithdrawalRequest) error
 }
 
 type paymentService struct {
@@ -34,7 +34,7 @@ var (
 	ErrAccountIsDisabled = errors.New("this user's account is currently disabled")
 )
 
-func (p paymentService) Deposit(user models.User, request *types.DepositRequest) error {
+func (p paymentService) Deposit(userId string, request *types.DepositRequest) error {
 	uw := repositories.NewGormUnitOfWork()
 	tx, err := uw.Begin()
 
@@ -44,7 +44,7 @@ func (p paymentService) Deposit(user models.User, request *types.DepositRequest)
 		}
 	}()
 
-	account, err := p.accountRepo.FindByUserId(user.UserId)
+	account, err := p.accountRepo.FindByAccountNumber(request.AccountNumber)
 	if !account.IsActive {
 		return ErrAccountIsDisabled
 	}
@@ -52,13 +52,13 @@ func (p paymentService) Deposit(user models.User, request *types.DepositRequest)
 		return err
 	}
 
-	response, err := p.accountService.CreditAccount(user.UserId, request.Amount, tx)
+	response, err := p.accountService.CreditAccount(request.AccountNumber, request.Amount, tx)
 	if err != nil {
 		return err
 	}
 
 	trx := &models.Transaction{
-		UserId:        user.UserId,
+		UserId:        userId,
 		AccountNumber: request.AccountNumber,
 		Status:        types.Success,
 		Entry:         types.Credit,
@@ -94,7 +94,7 @@ func (p paymentService) Deposit(user models.User, request *types.DepositRequest)
 	return nil
 }
 
-func (p paymentService) Withdrawal(user *models.User, request *types.WithdrawalRequest) error {
+func (p paymentService) Withdrawal(userId string, request *types.WithdrawalRequest) error {
 	uw := repositories.NewGormUnitOfWork()
 	tx, err := uw.Begin()
 
@@ -103,11 +103,11 @@ func (p paymentService) Withdrawal(user *models.User, request *types.WithdrawalR
 			tx.Rollback()
 		}
 	}()
-	account, err := p.accountRepo.FindByUserId(user.UserId)
+	account, err := p.accountRepo.FindByAccountNumber(request.AccountNumber)
 	if !account.IsActive {
 		return ErrAccountIsDisabled
 	}
-	response, err := p.accountService.DebitAccount(user.UserId, request.Amount, tx)
+	response, err := p.accountService.DebitAccount(request.AccountNumber, request.Amount, tx)
 	if err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ func (p paymentService) Withdrawal(user *models.User, request *types.WithdrawalR
 	}
 
 	trx := &models.Transaction{
-		UserId:  user.UserId,
+		UserId:  userId,
 		Status:  types.Success,
 		Entry:   types.Debit,
 		Type:    types.Withdrawal,

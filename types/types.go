@@ -46,9 +46,9 @@ type (
 	}
 	SavingsResponse struct {
 		AccountNumber   string `json:"account_number"`
-		CurrentBalance  int64  `json:"current_balance"`
 		PreviousBalance int64  `json:"previous_balance"`
-		LockedBalance   int64  `json:"locked_balance"`
+		CurrentBalance  int64  `json:"current_balance"`
+		LockedAmount    int64  `json:"locked_amount"`
 	}
 	WithdrawalRequest struct {
 		Amount        int64  `json:"amount" validate:"required"`
@@ -59,6 +59,15 @@ type (
 		Amount        int64  `json:"amount" validate:"required"`
 		Reason        string `json:"reason"`
 		AccountNumber string `json:"account_number" validate:"required"`
+	}
+	SavingsRequest struct {
+		AccountNumber string `json:"account_number"`
+		Amount        int64  `json:"amount"`
+		Duration      int    `json:"duration"`
+	}
+	Pagination struct {
+		Page     int `json:"page"`
+		PageSize int `json:"page_size"`
 	}
 )
 
@@ -72,6 +81,7 @@ const (
 
 	Deposit    TransactionType = "deposit"
 	Withdrawal TransactionType = "withdrawal"
+	Savings    TransactionType = "savings"
 
 	Credit TransactionEntry = "credit"
 	Debit  TransactionEntry = "debit"

@@ -12,9 +12,9 @@ import (
 
 type IAccountService interface {
 	CreateAccount(userId string) error
-	CreditAccount(userId string, amount int64, trx *gorm.DB) (*types.AccountResponse, error)
-	DebitAccount(userId string, amount int64, trx *gorm.DB) (*types.AccountResponse, error)
-	LockFunds(userId string, amount int64, duration int, trx *gorm.DB) (*types.SavingsResponse, error)
+	CreditAccount(accountNumber string, amount int64, trx *gorm.DB) (*types.AccountResponse, error)
+	DebitAccount(accountNumber string, amount int64, trx *gorm.DB) (*types.AccountResponse, error)
+	LockFunds(userId string, accountNumber string, amount int64, duration int, trx *gorm.DB) (*types.SavingsResponse, error)
 }
 
 type accountService struct {
@@ -55,7 +55,7 @@ func (as accountService) CreateAccount(userId string) error {
 	return nil
 }
 
-func (as accountService) CreditAccount(userId string, amount int64, trx *gorm.DB) (*types.AccountResponse, error) {
+func (as accountService) CreditAccount(accountNumber string, amount int64, trx *gorm.DB) (*types.AccountResponse, error) {
 
 	var lockedDB repositories.IAccountRepository
 
@@ -69,12 +69,12 @@ func (as accountService) CreditAccount(userId string, amount int64, trx *gorm.DB
 		})
 	}
 
-	account, err := lockedDB.FindByUserId(userId)
+	account, err := lockedDB.FindByAccountNumber(accountNumber)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			account = &models.Account{
-				UserId: userId,
+				AccountNumber: accountNumber,
 			}
 			err = lockedDB.Create(account)
 			if err != nil {
@@ -102,7 +102,7 @@ func (as accountService) CreditAccount(userId string, amount int64, trx *gorm.DB
 	return res, nil
 }
 
-func (as accountService) DebitAccount(userId string, amount int64, trx *gorm.DB) (*types.AccountResponse, error) {
+func (as accountService) DebitAccount(accountNumber string, amount int64, trx *gorm.DB) (*types.AccountResponse, error) {
 	var lockedDB repositories.IAccountRepository
 
 	if trx == nil {
@@ -115,12 +115,12 @@ func (as accountService) DebitAccount(userId string, amount int64, trx *gorm.DB)
 		})
 	}
 
-	account, err := lockedDB.FindByUserId(userId)
+	account, err := lockedDB.FindByAccountNumber(accountNumber)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			account = &models.Account{
-				UserId: userId,
+				AccountNumber: accountNumber,
 			}
 			err = lockedDB.Create(account)
 			if err != nil {
@@ -151,7 +151,7 @@ func (as accountService) DebitAccount(userId string, amount int64, trx *gorm.DB)
 	return res, nil
 }
 
-func (as accountService) LockFunds(userId string, amount int64, duration int, trx *gorm.DB) (*types.SavingsResponse, error) {
+func (as accountService) LockFunds(userId string, accountNumber string, amount int64, duration int, trx *gorm.DB) (*types.SavingsResponse, error) {
 	var lockedDB repositories.IAccountRepository
 
 	if trx == nil {
@@ -164,12 +164,12 @@ func (as accountService) LockFunds(userId string, amount int64, duration int, tr
 		})
 	}
 
-	account, err := lockedDB.FindByUserId(userId)
+	account, err := lockedDB.FindByAccountNumber(accountNumber)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			account = &models.Account{
-				UserId: userId,
+				AccountNumber: accountNumber,
 			}
 			err = lockedDB.Create(account)
 			if err != nil {
@@ -188,9 +188,10 @@ func (as accountService) LockFunds(userId string, amount int64, duration int, tr
 	err = lockedDB.Update(account)
 
 	savings := models.Savings{
-		UserId:   userId,
-		Amount:   amount,
-		Duration: duration,
+		UserId:        userId,
+		AccountNumber: accountNumber,
+		Amount:        amount,
+		Duration:      duration,
 	}
 	err = as.savingsRepo.Create(&savings)
 	if err != nil {
@@ -204,6 +205,5 @@ func (as accountService) LockFunds(userId string, amount int64, duration int, tr
 		AccountNumber:   account.AccountNumber,
 		CurrentBalance:  account.AvailableBalance,
 		PreviousBalance: prevBal,
-		LockedBalance:   amount,
 	}, nil
 }
