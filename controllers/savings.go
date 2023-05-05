@@ -35,7 +35,10 @@ func (ctl *savingsController) RegisterRoutes(app *fiber.App) {
 func (ctl *savingsController) GetSavings(ctx *fiber.Ctx) error {
 	_, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 
 	accountNumber := ctx.Params("account_number")
@@ -61,7 +64,10 @@ func (ctl *savingsController) GetSavings(ctx *fiber.Ctx) error {
 func (ctl *savingsController) SaveFunds(ctx *fiber.Ctx) error {
 	userId, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 
 	var body *types.SavingsRequest

@@ -31,7 +31,10 @@ func (ctl *accountController) RegisterRoutes(app *fiber.App) {
 func (ctl *accountController) GetAccount(ctx *fiber.Ctx) error {
 	userId, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 
 	account, err := ctl.accountService.GetAccount(userId)

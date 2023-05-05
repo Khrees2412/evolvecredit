@@ -32,7 +32,10 @@ func (ctl *transactionController) RegisterRoutes(app *fiber.App) {
 func (ctl *transactionController) GetTransaction(ctx *fiber.Ctx) error {
 	userId, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 	transactionId := ctx.Params("id")
 	transaction, err := ctl.transactionService.GetTransaction(userId, transactionId)
@@ -54,7 +57,10 @@ func (ctl *transactionController) GetTransaction(ctx *fiber.Ctx) error {
 func (ctl *transactionController) GetAllTransactions(ctx *fiber.Ctx) error {
 	userId, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 	page := ctx.QueryInt("page")
 	pageSize := ctx.QueryInt("page_size")

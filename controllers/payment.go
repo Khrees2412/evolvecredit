@@ -32,7 +32,10 @@ func (ctl *paymentController) RegisterRoutes(app *fiber.App) {
 func (ctl *paymentController) Deposit(ctx *fiber.Ctx) error {
 	userId, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 
 	var body *types.DepositRequest
@@ -66,7 +69,10 @@ func (ctl *paymentController) Deposit(ctx *fiber.Ctx) error {
 func (ctl *paymentController) Withdraw(ctx *fiber.Ctx) error {
 	userId, err := utils.UserFromContext(ctx)
 	if err != nil {
-		return err
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
 	}
 
 	var body *types.WithdrawalRequest
