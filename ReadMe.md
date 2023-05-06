@@ -29,3 +29,10 @@ here). We do not care a lot about code coverage, we care more about what you
 choose to test and why.
 iv. Write integration tests for the modules you consider most critical (your discretion
 is required here)
+-------------------------------------------------------------------
+ - If I had more time I'd implement OTP to validate emails
+ - Configure the savings lock and release properly
+ - implement reversals (although this isn't an automated system)
+ - make it possible to have multiple accounts tied to a user
+ - make it possible to save multiple times
+ - implement tests properly mostly on the controllers 
