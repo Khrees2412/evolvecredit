@@ -28,7 +28,7 @@ func NewSavingsController() ISavingsController {
 
 func (ctl *savingsController) RegisterRoutes(app *fiber.App) {
 	savings := app.Group("/v1/savings")
-	savings.Get("/", utils.SecureAuth(), ctl.GetSavings)
+	savings.Get("/:account_number", utils.SecureAuth(), ctl.GetSavings)
 	savings.Post("/", utils.SecureAuth(), ctl.SaveFunds)
 }
 
