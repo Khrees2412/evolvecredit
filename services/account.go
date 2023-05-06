@@ -45,8 +45,8 @@ func (as accountService) GetAccount(userId string) (*models.Account, error) {
 }
 
 func (as accountService) CreateAccount(userId string) error {
-	_, err := as.accountRepo.FindByUserId(userId)
-	if err != nil {
+	account, err := as.accountRepo.FindByUserId(userId)
+	if account != nil {
 		return ErrAccountAlreadyExists
 	}
 	acct := models.Account{

@@ -6,6 +6,7 @@ import (
 	"github.com/khrees2412/evolvecredit/models"
 	"github.com/khrees2412/evolvecredit/repositories"
 	"github.com/khrees2412/evolvecredit/types"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"os"
 	"strconv"
@@ -20,15 +21,13 @@ type IAuthService interface {
 }
 
 type authService struct {
-	jwtSecret string
-	userRepo  repositories.IUserRepository
+	userRepo repositories.IUserRepository
 }
 
 // NewAuthService will instantiate AuthService
 func NewAuthService() IAuthService {
 	return &authService{
-		jwtSecret: os.Getenv("JWT_SECRET"),
-		userRepo:  repositories.NewUserRepo(),
+		userRepo: repositories.NewUserRepo(),
 	}
 }
 
@@ -100,8 +99,9 @@ func (as *authService) IssueToken(u *models.User) (*types.TokenResponse, error) 
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	jwtSecret := os.Getenv("JWT_KEY")
 
-	accessToken, err := jwtToken.SignedString([]byte(as.jwtSecret))
+	accessToken, err := jwtToken.SignedString([]byte(jwtSecret))
 
 	if err != nil {
 		return nil, err
@@ -115,11 +115,13 @@ func (as *authService) IssueToken(u *models.User) (*types.TokenResponse, error) 
 }
 
 func (as *authService) ParseToken(token string) (*types.Claims, error) {
+	jwtSecret := os.Getenv("JWT_KEY")
+	logrus.Print(jwtSecret)
 	tokenClaims, err := jwt.ParseWithClaims(
 		token,
 		&types.Claims{},
 		func(token *jwt.Token) (interface{}, error) {
-			return []byte(as.jwtSecret), nil
+			return []byte(jwtSecret), nil
 		},
 	)
 

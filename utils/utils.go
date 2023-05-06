@@ -19,10 +19,10 @@ func (tk Token) ExtractBearerToken(t string) (string, error) {
 }
 
 func GenerateAccountNumber() string {
+	rand.Seed(time.Now().UnixNano())
 	num := ""
-	for i := 1; i < 10; i++ {
-		rand.Seed(time.Now().UnixNano())
-		num = strconv.Itoa(rand.Int())
+	for i := 0; i < 10; i++ {
+		num += strconv.Itoa(rand.Intn(10))
 	}
 	return num
 }

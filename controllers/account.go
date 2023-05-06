@@ -9,6 +9,7 @@ import (
 
 type IAccountController interface {
 	GetAccount(ctx *fiber.Ctx) error
+	CreateAccount(ctx *fiber.Ctx) error
 	RegisterRoutes(app *fiber.App)
 }
 
@@ -25,6 +26,7 @@ func NewAccountController() IAccountController {
 func (ctl *accountController) RegisterRoutes(app *fiber.App) {
 	accounts := app.Group("/v1/accounts")
 	accounts.Get("/", utils.SecureAuth(), ctl.GetAccount)
+	accounts.Post("/", utils.SecureAuth(), ctl.CreateAccount)
 
 }
 
@@ -50,5 +52,27 @@ func (ctl *accountController) GetAccount(ctx *fiber.Ctx) error {
 		Message: "Successfully retrieved account",
 		Data:    account,
 	})
+}
 
+func (ctl *accountController) CreateAccount(ctx *fiber.Ctx) error {
+	userId, err := utils.UserFromContext(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	err = ctl.accountService.CreateAccount(userId)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(types.GenericResponse{
+			Success: false,
+			Message: err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(types.GenericResponse{
+		Success: true,
+		Message: "Successfully created account",
+	})
 }

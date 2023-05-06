@@ -80,6 +80,7 @@ func (p paymentService) Deposit(userId string, request *types.DepositRequest) er
 		Entry:           types.Credit,
 		PreviousBalance: response.PreviousBalance,
 		CurrentBalance:  response.CurrentBalance,
+		UserId:          userId,
 	})
 
 	if err != nil {
@@ -138,6 +139,7 @@ func (p paymentService) Withdrawal(userId string, request *types.WithdrawalReque
 		Entry:           types.Debit,
 		PreviousBalance: response.PreviousBalance,
 		CurrentBalance:  response.CurrentBalance,
+		UserId:          userId,
 	})
 
 	if err != nil {

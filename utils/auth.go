@@ -39,6 +39,7 @@ func StructToMap(inStruct interface{}) (map[string]interface{}, error) {
 // SecureAuth returns a middleware which secures all the private routes
 func SecureAuth() func(*fiber.Ctx) error {
 	jwtKey := os.Getenv("JWT_KEY")
+
 	return func(c *fiber.Ctx) error {
 		accessToken, err := utilToken.ExtractBearerToken(c.Get("Authorization"))
 		if err != nil {
@@ -53,7 +54,6 @@ func SecureAuth() func(*fiber.Ctx) error {
 			func(token *jwt.Token) (interface{}, error) {
 				return []byte(jwtKey), nil
 			})
-
 		if err != nil {
 			logrus.Error("error while parsing claims: %v", err)
 			return c.Status(fiber.StatusUnauthorized).JSON(types.GenericResponse{
