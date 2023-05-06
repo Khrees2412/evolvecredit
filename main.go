@@ -37,7 +37,6 @@ func main() {
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("You're home, yaay!!")
 	})
-	setupSystemRouteHandler(app)
 
 	port := os.Getenv("PORT")
 
@@ -57,8 +56,9 @@ func main() {
 		log.Fatalf("migration error: %v", err)
 	}
 	routes.RegisterRoutes(app)
+	setupSystemRouteHandler(app)
 
-	if err := app.Listen(":" + port); err != nil && err != http.ErrServerClosed {
+	if err = app.Listen(":" + port); err != nil && err != http.ErrServerClosed {
 		log.Fatal(fmt.Sprintf("listen: %s\n", err))
 	}
 }
@@ -66,8 +66,6 @@ func main() {
 func setupSystemRouteHandler(app *fiber.App) {
 	// 404 Handler
 	app.Use(func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
+		return c.Status(fiber.StatusNotFound).SendString("!")
 	})
-	// 405 Handler
-	//router.NoMethod(handlers.Http405Handler())
 }

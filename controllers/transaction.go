@@ -25,8 +25,8 @@ func NewTransactionController() ITransactionController {
 
 func (ctl *transactionController) RegisterRoutes(app *fiber.App) {
 	transactions := app.Group("/v1/transactions")
-	transactions.Post("/:id", utils.SecureAuth(), ctl.GetTransaction)
-	transactions.Post("/", utils.SecureAuth())
+	transactions.Get("/", utils.SecureAuth(), ctl.GetAllTransactions)
+	transactions.Get("/:id", utils.SecureAuth(), ctl.GetTransaction)
 }
 
 func (ctl *transactionController) GetTransaction(ctx *fiber.Ctx) error {

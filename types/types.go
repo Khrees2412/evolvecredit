@@ -90,7 +90,7 @@ const (
 	Credit TransactionEntry = "credit"
 	Debit  TransactionEntry = "debit"
 
-	Success TransactionStatus = "success"
+	Success TransactionStatus = "successful"
 	Failed  TransactionStatus = "failed"
 	Pending TransactionStatus = "pending"
 )

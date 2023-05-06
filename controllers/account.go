@@ -24,7 +24,7 @@ func NewAccountController() IAccountController {
 
 func (ctl *accountController) RegisterRoutes(app *fiber.App) {
 	accounts := app.Group("/v1/accounts")
-	accounts.Get("/balance", utils.SecureAuth(), ctl.GetAccount)
+	accounts.Get("/", utils.SecureAuth(), ctl.GetAccount)
 
 }
 
