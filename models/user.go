@@ -17,7 +17,7 @@ type User struct {
 
 // Base contains common columns for all tables
 type Base struct {
-	Counter   int       `json:"counter"`
+	Counter   int       `json:"counter" gorm:"autoIncrement"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
