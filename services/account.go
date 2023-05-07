@@ -207,9 +207,6 @@ func (as accountService) LockFunds(userId string, accountNumber string, amount i
 		return nil, err
 	}
 
-	if err != nil {
-		return nil, err
-	}
 	return &types.SavingsResponse{
 		AccountNumber:   account.AccountNumber,
 		CurrentBalance:  account.AvailableBalance,

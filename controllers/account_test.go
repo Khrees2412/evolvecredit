@@ -15,7 +15,7 @@ func TestAccountController_GetAccount(t *testing.T) {
 	}{
 		{
 			description:  "This gets an account",
-			route:        "/accounts/balance",
+			route:        "/accounts",
 			expectedCode: 200,
 		},
 	}

@@ -113,10 +113,6 @@ func (p paymentService) Withdrawal(userId string, request *types.WithdrawalReque
 		return err
 	}
 
-	if err != nil {
-		return err
-	}
-
 	trx := &models.Transaction{
 		UserId:  userId,
 		Status:  types.Success,

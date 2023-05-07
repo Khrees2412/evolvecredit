@@ -72,6 +72,8 @@ func (s savingsService) SaveFunds(userId string, request *types.SavingsRequest) 
 		UserId:        userId,
 		AccountNumber: request.AccountNumber,
 		Status:        types.Success,
+		Type:          types.Savings,
+		Entry:         types.Debit,
 		Amount:        request.Amount,
 		Balance:       response.CurrentBalance,
 		LockedAmount:  response.LockedAmount,
@@ -89,6 +91,8 @@ func (s savingsService) SaveFunds(userId string, request *types.SavingsRequest) 
 		AccountNumber:   response.AccountNumber,
 		PreviousBalance: response.PreviousBalance,
 		CurrentBalance:  response.CurrentBalance,
+		Entry:           types.Debit,
+		UserId:          userId,
 	})
 
 	if err != nil {
